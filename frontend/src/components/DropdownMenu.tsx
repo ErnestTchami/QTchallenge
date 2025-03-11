@@ -1,8 +1,11 @@
-import { LogOut, Settings, User } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { LogOut, User } from "lucide-react";
+import router from "next/dist/client/router";
 import React, { useEffect, useRef, useState } from "react";
 
 function DropdownMenu() {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const [filterDropdownOpen, setFilterDropdownOpen] = useState(false);
   const [actionDropdownOpen, setActionDropdownOpen] = useState<string | null>(
@@ -40,7 +43,16 @@ function DropdownMenu() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [userDropdownOpen, filterDropdownOpen, actionDropdownOpen]);
-
+  const { logout, data } = useAuth();
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout();
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   return (
     <div className="flex items-center space-x-4">
       <div className="relative" ref={userDropdownRef}>
@@ -56,15 +68,22 @@ function DropdownMenu() {
             <div className="py-1">
               <button className="flex items-center w-full px-4 py-2 text-sm text-indigo-700 hover:bg-indigo-50 transition-colors duration-150">
                 <User className="mr-2 h-4 w-4" />
-                Profile
-              </button>
-              <button className="flex items-center w-full px-4 py-2 text-sm text-indigo-700 hover:bg-indigo-50 transition-colors duration-150">
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
+                {data?.username}
               </button>
               <div className="border-t border-indigo-200/30 my-1"></div>
-              <button className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150">
-                <LogOut className="mr-2 h-4 w-4" />
+              <button
+                onClick={async () => {
+                  setIsLoggingOut(true);
+                  await handleLogout();
+                  setIsLoggingOut(false);
+                }}
+                className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-150"
+              >
+                {isLoggingOut ? (
+                  <div className="mr-2 h-4 w-4 text-blue-600 animate-spin rounded-full border-2 border-white border-dotted"></div>
+                ) : (
+                  <LogOut className="mr-2 h-4 w-4" />
+                )}
                 Logout
               </button>
             </div>

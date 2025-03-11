@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/AuthContext";
 import { useState, FormEvent } from "react";
 
 interface FormState<T> {
@@ -48,7 +49,7 @@ export function useForm<T extends Record<string, unknown>>(initialValues: T) {
       isLoading: false,
     });
   };
-
+  const {} = useAuth();
   const handleSubmit = (onSubmit: (values: T) => Promise<void>) => {
     return async (e: FormEvent) => {
       e.preventDefault();
