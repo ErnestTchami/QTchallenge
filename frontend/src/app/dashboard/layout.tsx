@@ -3,8 +3,8 @@ import "../globals.css";
 import { SidebarLinks } from "@/components/dashboard/sidebarLinks";
 
 export const metadata: Metadata = {
-  title: "Wallet web Application ",
-  description: "Generated cash management app",
+  title: "Short URL",
+  description: "Short URL",
 };
 
 export default function RootLayout({

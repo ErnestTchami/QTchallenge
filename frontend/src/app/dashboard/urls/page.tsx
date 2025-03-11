@@ -27,8 +27,8 @@ export default function UrlsPage() {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (url) =>
-          url.longUrl.toLowerCase().includes(query) ||
-          url.shortUrl.toLowerCase().includes(query)
+          (url as any).longUrl.toLowerCase().includes(query) ||
+          (url as any).shortUrl.toLowerCase().includes(query)
       );
     }
 
@@ -58,7 +58,9 @@ export default function UrlsPage() {
   };
 
   const handleSelectAll = (selected: boolean) => {
-    setSelectedUrls(selected ? filteredUrls?.map((url) => url.id) || [] : []);
+    setSelectedUrls(
+      selected ? filteredUrls?.map((url) => url.id.toString()) || [] : []
+    );
   };
 
   const filterOptions = [

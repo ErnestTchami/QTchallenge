@@ -25,7 +25,7 @@ export default function Login() {
       email: "",
       password: "",
     },
-    mode: "onTouched", // Show errors on blur
+    mode: "onTouched",
   });
 
   const onSubmit = async (values: LoginFormValues) => {

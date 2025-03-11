@@ -3,7 +3,7 @@ import { Url } from "@/types/types";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
 
 interface UrlTableProps {
-  urls: Url[];
+  urls: Url[] | any;
   selectedUrls: string[];
   onSelectUrl: (id: string) => void;
   onSelectAll: (selected: boolean) => void;
@@ -57,10 +57,10 @@ export function UrlTable({
             <td className="p-4">
               <div className="flex flex-col">
                 <span className="text-indigo-600 font-medium">
-                  {url.shortUrl}
+                  {process.env.NEXT_PUBLIC_API_URL}/urls/{url.short_code}
                 </span>
                 <span className="text-sm text-gray-500 truncate max-w-md">
-                  {url.longUrl}
+                  {url.long_url}
                 </span>
               </div>
             </td>
@@ -77,14 +77,23 @@ export function UrlTable({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => onCopyUrl(url.shortUrl)}
+                  onClick={() =>
+                    onCopyUrl(
+                      `${process.env.NEXT_PUBLIC_API_URL}/urls/${url.short_code}`
+                    )
+                  }
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => window.open(url.shortUrl, "_blank")}
+                  onClick={() =>
+                    window.open(
+                      `${process.env.NEXT_PUBLIC_API_URL}/urls/${url.short_code}`,
+                      "_blank"
+                    )
+                  }
                 >
                   <ExternalLink className="h-4 w-4" />
                 </Button>
