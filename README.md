@@ -1,6 +1,6 @@
 # URL Shortener - Full Stack Application
 
-A modern URL shortening service built with Next.js 14 and Node.js, featuring user authentication, analytics, and real-time URL management.
+A modern URL shortening service built with Next.js 15 and Node.js, featuring user authentication, analytics, and real-time URL management.
 
 ## 🚀 Live Demo
 
@@ -31,7 +31,7 @@ A modern URL shortening service built with Next.js 14 and Node.js, featuring use
 ## 🛠 Tech Stack
 
 ### Frontend
-- Next.js 14
+- Next.js 15
 - TypeScript
 - TailwindCSS
 - TanStack Query
@@ -92,6 +92,4 @@ npm run dev
 
 
 
-## 📱 API Endpoints
 
-### Authentication
