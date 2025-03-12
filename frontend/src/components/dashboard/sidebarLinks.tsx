@@ -5,7 +5,6 @@ import { IconBrandTabler, IconLink } from "@tabler/icons-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import UserProfileImage from "./userProfileImage";
 
 interface SidebarLinksProps {
   children: React.ReactNode;
@@ -51,7 +50,6 @@ export function SidebarLinks({ children }: SidebarLinksProps) {
               )}
             </div>
           </div>
-          <UserProfileImage />
         </SidebarBody>
       </Sidebar>
       <div className="flex flex-1">

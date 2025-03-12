@@ -1,33 +1,22 @@
 import { urlService } from "@/services/url";
-import { Url } from "@/types/url";
 import { toast } from "react-hot-toast";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  UseQueryResult,
-} from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 
 export function useUrls() {
-  const queryClient = useQueryClient();
-
-  // Query for fetching URLs
   const {
     data: urls = [],
     isLoading,
     error,
-  }: UseQueryResult<Url[], Error> = useQuery({
+    refetch,
+  } = useQuery({
     queryKey: ["urls"],
     queryFn: urlService.getUserUrls,
   });
 
-  const createUrlMutation = useMutation({
+  const { mutate: createUrl, isPending: isCreating } = useMutation({
     mutationFn: (longUrl: string) => urlService.createShortUrl(longUrl),
-    onSuccess: (newUrl) => {
-      queryClient.setQueryData(["urls"], (oldUrls: Url[] = []) => [
-        newUrl,
-        ...oldUrls,
-      ]);
+    onSuccess: () => {
+      refetch();
       toast.success("URL shortened successfully!");
     },
     onError: () => {
@@ -35,14 +24,10 @@ export function useUrls() {
     },
   });
 
-  // Mutation for deleting URLs
-  const deleteUrlMutation = useMutation({
+  const { mutate: deleteUrl, isPending: isDeleting } = useMutation({
     mutationFn: urlService.deleteUrl,
-    onSuccess: (_, deletedId) => {
-      // Update URLs cache
-      queryClient.setQueryData(["urls"], (oldUrls: Url[] = []) =>
-        oldUrls.filter((url) => url.id !== deletedId)
-      );
+    onSuccess: () => {
+      refetch();
       toast.success("URL deleted successfully!");
     },
     onError: () => {
@@ -74,10 +59,10 @@ export function useUrls() {
     isLoading,
     error,
     stats,
-    createUrl: createUrlMutation.mutate,
-    deleteUrl: deleteUrlMutation.mutate,
-    isCreating: createUrlMutation.isPending,
-    isDeleting: deleteUrlMutation.isPending,
+    createUrl,
+    deleteUrl,
+    isCreating,
+    isDeleting,
     copyToClipboard,
   };
 }

@@ -2,8 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useUrls } from "@/hooks/useUrls";
-import { Search, Calendar, LinkIcon, ChevronDown } from "lucide-react";
-import { Input } from "@/components/ui/Input";
+import { Calendar, LinkIcon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { UrlTable } from "@/components/dashboard/UrlTable";
 
@@ -11,7 +10,6 @@ type FilterPeriod = "7days" | "30days" | "90days" | "all";
 
 export default function UrlsPage() {
   const [selectedUrls, setSelectedUrls] = useState<string[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [filterPeriod, setFilterPeriod] = useState<FilterPeriod>("all");
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const { urls, isLoading: isLoadingUrls, copyToClipboard } = useUrls();
@@ -22,17 +20,6 @@ export default function UrlsPage() {
 
     let filtered = [...urls];
 
-    // Apply search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (url) =>
-          (url as any).longUrl.toLowerCase().includes(query) ||
-          (url as any).shortUrl.toLowerCase().includes(query)
-      );
-    }
-
-    // Apply time period filter
     if (filterPeriod !== "all") {
       const now = new Date();
       const periods = {
@@ -49,7 +36,7 @@ export default function UrlsPage() {
     }
 
     return filtered;
-  }, [urls, searchQuery, filterPeriod]);
+  }, [urls, filterPeriod]);
 
   const handleSelectUrl = (id: string) => {
     setSelectedUrls((prev) =>
@@ -88,15 +75,15 @@ export default function UrlsPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="relative flex-1">
               <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
+                {/* <Search className="h-4 w-4 text-gray-400" /> */}
               </div>
-              <Input
+              {/* <Input
                 type="text"
                 placeholder="Search URLs..."
                 className="pl-10 w-full"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-              />
+              /> */}
             </div>
             <div className="flex gap-3">
               <div className="relative">
@@ -175,12 +162,12 @@ export default function UrlsPage() {
             <div className="text-center py-12">
               <LinkIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {searchQuery || filterPeriod !== "all"
+                {filterPeriod !== "all"
                   ? "No URLs found matching your filters"
                   : "No URLs found"}
               </h3>
               <p className="text-gray-600">
-                {searchQuery || filterPeriod !== "all"
+                {filterPeriod !== "all"
                   ? "Try adjusting your search or filter settings"
                   : "Create your first shortened URL to get started"}
               </p>
@@ -200,7 +187,7 @@ export default function UrlsPage() {
         <div className="flex items-center justify-between">
           <p className="text-sm text-gray-600">
             Showing {filteredUrls.length} URLs
-            {(searchQuery || filterPeriod !== "all") && " (filtered)"}
+            {filterPeriod !== "all" && " (filtered)"}
           </p>
           <div className="flex gap-2">
             <Button variant="secondary" size="sm" disabled>
