@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { API_URL } from "@/services/constant";
 import { Url } from "@/types/types";
 import { Copy, ExternalLink, MoreHorizontal } from "lucide-react";
 
@@ -79,7 +80,7 @@ export function UrlTable({
                   size="sm"
                   onClick={() =>
                     onCopyUrl(
-                      `${process.env.NEXT_PUBLIC_API_URL}/urls/${url.short_code}`
+                      `${API_URL}/urls/${url.short_code}`
                     )
                   }
                 >
@@ -90,7 +91,7 @@ export function UrlTable({
                   size="sm"
                   onClick={() =>
                     window.open(
-                      `${process.env.NEXT_PUBLIC_API_URL}/urls/${url.short_code}`,
+                      `${API_URL}/urls/${url.short_code}`,
                       "_blank"
                     )
                   }

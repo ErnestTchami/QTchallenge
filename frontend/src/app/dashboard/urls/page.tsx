@@ -14,7 +14,6 @@ export default function UrlsPage() {
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const { urls, isLoading: isLoadingUrls, copyToClipboard } = useUrls();
 
-  // Filter URLs based on search query and time period
   const filteredUrls = useMemo(() => {
     if (!urls) return [];
 

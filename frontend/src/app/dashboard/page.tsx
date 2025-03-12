@@ -12,7 +12,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import useDashboard from "@/hooks/useDashboard";
 const queryClient = new QueryClient();
 
-// Separate the dashboard content from the provider wrapper
 function DashboardContent() {
   const {
     activeTab,
