@@ -1,11 +1,6 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
-import { useUrls } from "@/hooks/useUrls";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { LinkIcon, Search } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -13,80 +8,28 @@ import { Input } from "@/components/ui/Input";
 import { UrlTable } from "@/components/dashboard/UrlTable";
 import DropdownMenu from "@/components/DropdownMenu";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
-
-const urlSchema = z.object({
-  longUrl: z.string().url("Please enter a valid URL"),
-});
-
-type UrlFormValues = z.infer<typeof urlSchema>;
-
-interface ToastMessage {
-  id: string;
-  title?: string;
-  description: string;
-  variant?: "default" | "destructive";
-  action?: React.ReactNode;
-}
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import useDashboard from "@/hooks/useDashboard";
+const queryClient = new QueryClient();
 
 // Separate the dashboard content from the provider wrapper
 function DashboardContent() {
-  const [activeTab, setActiveTab] = useState("all");
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
-  const [selectedUrls, setSelectedUrls] = useState<string[]>([]);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-
-  const { urls, isLoading, stats, createUrl, isCreating, copyToClipboard } =
-    useUrls();
-  console.log(urls, "-----------------------------urls");
-  const form = useForm<UrlFormValues>({
-    resolver: zodResolver(urlSchema),
-    defaultValues: {
-      longUrl: "",
-    },
-  });
-
-  const showToast = (toast: Omit<ToastMessage, "id">) => {
-    const id = Math.random().toString(36).substring(2, 9);
-    setToasts((prev) => [...prev, { ...toast, id }]);
-
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 5000);
-  };
-
-  const onSubmit = async (values: UrlFormValues) => {
-    if (!values.longUrl) return;
-    try {
-      await createUrl(values.longUrl);
-      form.reset();
-      setShowCreateModal(false);
-      showToast({
-        title: "URL shortened successfully",
-        description: "Your new short URL is ready to use",
-      });
-    } catch (error) {
-      console.error("Error shortening URL:", error);
-      showToast({
-        title: "Failed to shorten URL",
-        description: "Please try again later",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleSelectUrl = (id: string) => {
-    setSelectedUrls((prev) =>
-      prev.includes(id) ? prev.filter((urlId) => urlId !== id) : [...prev, id]
-    );
-  };
-
-  const handleSelectAll = (selected: boolean) => {
-    setSelectedUrls(
-      selected ? urls?.map((url) => url.id.toString()) || [] : []
-    );
-    setSelectedUrls(selected ? (urls as any)?.map((url) => url.id) || [] : []);
-  };
-
+  const {
+    activeTab,
+    selectedUrls,
+    showCreateModal,
+    isLoading,
+    stats,
+    isCreating,
+    copyToClipboard,
+    form,
+    onSubmit,
+    handleSelectUrl,
+    handleSelectAll,
+    setShowCreateModal,
+    setActiveTab,
+    urls,
+  } = useDashboard();
   return (
     <ProtectedRoute>
       <div className=" bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 py-12 px-6">
@@ -294,24 +237,6 @@ function DashboardContent() {
             </div>
           </div>
 
-          {/* Toast notifications */}
-          <div className="fixed bottom-0 right-0 p-6 z-50">
-            <div className="space-y-2">
-              {toasts.map((toast) => (
-                <div
-                  key={toast.id}
-                  className={`max-w-md w-full bg-white/80 backdrop-blur-sm shadow-xl rounded-lg pointer-events-auto flex ring-1 ring-indigo-900/5 ${
-                    toast.variant === "destructive"
-                      ? "border-l-4 border-red-500"
-                      : ""
-                  }`}
-                >
-                  {/* Toast content */}
-                </div>
-              ))}
-            </div>
-          </div>
-
           {showCreateModal && (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
               <Card className="w-full max-w-lg p-6">
@@ -344,4 +269,10 @@ function DashboardContent() {
   );
 }
 
-export default DashboardContent;
+export default function Dashboard() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <DashboardContent />
+    </QueryClientProvider>
+  );
+}

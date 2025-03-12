@@ -102,21 +102,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email,
       });
 
-      const userData = {
-        ...response.user,
-        token: response.accessToken,
-      };
-
-      // Save to localStorage
-      localStorage.setItem("userData", JSON.stringify(userData));
-
-      setAuthState({
-        data: userData,
-        isAuthenticated: true,
-        isLoading: false,
-        userData: userData,
-      });
-
       return response;
     } catch (error) {
       localStorage.removeItem("userData");
