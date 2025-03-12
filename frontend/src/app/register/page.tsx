@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -15,7 +16,7 @@ import { useState } from "react";
 
 export default function Register() {
   const router = useRouter();
-  const { register } = useAuth();
+  const { register, isLoading, data } = useAuth();
   const [formError, setFormError] = useState<string | null>(null);
 
   const {
@@ -31,6 +32,20 @@ export default function Register() {
     },
     mode: "onTouched",
   });
+
+  useEffect(() => {
+    if (!isLoading && data) {
+      router.push("/dashboard");
+    }
+  }, [isLoading, data, router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   const onSubmit = async (values: RegisterFormValues) => {
     try {
