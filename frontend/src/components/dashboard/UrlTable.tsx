@@ -57,7 +57,7 @@ export function UrlTable({
             <td className="p-4">
               <div className="flex flex-col">
                 <span className="text-indigo-600 font-medium">
-                  {process.env.NEXT_PUBLIC_API_URL}/urls/{url.short_code}
+                 urls/{url.short_code}
                 </span>
                 <span className="text-sm text-gray-500 truncate max-w-md">
                   {url.long_url}

@@ -23,22 +23,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [authState, setAuthState] = useState<AuthState & { userData: any }>({
     data: null,
     isAuthenticated: false,
-    isLoading: false,
+    isLoading: true,
     userData: null,
   });
 
   useEffect(() => {
-    // Check localStorage on mount
-    const userData = localStorage.getItem("userData");
-    if (userData) {
-      const user = JSON.parse(userData);
-      setAuthState({
-        data: user,
-        isAuthenticated: true,
-        isLoading: false,
-        userData: user,
-      });
-    }
+    const initializeAuth = async () => {
+      try {
+        const userData = localStorage.getItem("userData");
+        const accessToken = sessionStorage.getItem("accessToken");
+
+        if (userData && accessToken) {
+          const user = JSON.parse(userData);
+          setAuthState({
+            data: user,
+            isAuthenticated: true,
+            isLoading: false,
+            userData: user,
+          });
+        } else {
+          setAuthState((prev) => ({
+            ...prev,
+            isLoading: false,
+          }));
+        }
+      } catch {
+        setAuthState((prev) => ({
+          ...prev,
+          isLoading: false,
+        }));
+      }
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (email: string, password: string) => {
